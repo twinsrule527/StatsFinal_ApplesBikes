@@ -40,7 +40,7 @@ for i in range(bprime_data.size) :
 
 print(mean(bprime_data))
 print(variance(bprime_data))
-
-plt.plot(bprime_data)
+#I don't use this plot, but wanted to create it just to see if there's anything immediately visible
 plt.plot(bikedata)
+plt.plot(bprime_data)
 plt.show()

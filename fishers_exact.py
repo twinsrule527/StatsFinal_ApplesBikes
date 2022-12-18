@@ -66,18 +66,4 @@ for k in range(new_appledata.size) :
 
 print(new_table)
 
-
-
-#rows = np.array([0,2,4,5])#ray([0,2,4,5])
-#columns = np.array([0,20,40,150])
-#new_table = np.zeros([rows.size,columns.size])
-#for k in range(new_appledata.size) :
-#    for i in range(rows.size) :
-#        if(new_appledata[k] <= rows[i]) :
-#            for j in range(columns.size) :
-#                if(bikedata[k] <= columns[j]) :
-#                    new_table[i][j] = new_table[i][j]+1
-#                    break;
-#            break;
-#print(new_table)
-#print(sum(new_table))
+#I never actually need to perform the test, because of how clear it is that the new table's data is independent

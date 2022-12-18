@@ -44,5 +44,6 @@ def cov(x,y) :
     c = c/(x.size)
     return c
 
+#simply calculate the covariance
 covariance = cov(appledata[appledata.size-bikedata.size:appledata.size],bikedata)
 print(covariance)

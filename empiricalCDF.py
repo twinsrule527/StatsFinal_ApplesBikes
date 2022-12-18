@@ -34,7 +34,7 @@ bikesheet = np.array([[i.value for i in j] for j in sheet_bike['A3':'B832']])
 appledata = applesheet[:,1]
 bikedata = bikesheet[:,1]
 
-
+#generate the CDF by cycling through all elements of the data, and adding 1 to all elements in the CDF <= the given element
 appleCDF = np.zeros(8)
 for i in range(appledata.size) :
     a = int(appledata[i])
@@ -42,6 +42,8 @@ for i in range(appledata.size) :
         appleCDF[j]= appleCDF[j]+1
 for i in range(appleCDF.size) :
     appleCDF[i] = appleCDF[i]/appledata.size
+
+#Create a second array that doubles up on values to make it easy to plot the stairs in a basic plot function
 appleCDF_plot = np.zeros(16)
 x = np.zeros(16)
 for i in range(appleCDF.size) :
@@ -53,6 +55,7 @@ for i in range(appleCDF.size) :
 #Plot it with an error band
 #error constant
 e_apple = np.sqrt(1/(2*appledata.size)*np.log(2/0.05))
+#lower bound and upper bound
 L_apple = appleCDF_plot - e_apple
 U_apple = appleCDF_plot + e_apple
 for i in range(appleCDF_plot.size) :
