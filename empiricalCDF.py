@@ -45,12 +45,12 @@ for i in range(appleCDF.size) :
 
 #Create a second array that doubles up on values to make it easy to plot the stairs in a basic plot function
 appleCDF_plot = np.zeros(16)
-x = np.zeros(16)
+x_a = np.zeros(16)
 for i in range(appleCDF.size) :
     appleCDF_plot[2*i] = appleCDF[i]
     appleCDF_plot[2*i+1] = appleCDF[i]
-    x[2*i] = i
-    x[2*i+1] = i+1
+    x_a[2*i] = i
+    x_a[2*i+1] = i+1
     
 #Plot it with an error band
 #error constant
@@ -61,8 +61,8 @@ U_apple = appleCDF_plot + e_apple
 for i in range(appleCDF_plot.size) :
     L_apple[i] = max(L_apple[i],0)
     U_apple[i] = min(U_apple[i],1)
-plt.fill_between(x,L_apple,U_apple, label = "confidence band",color="lightblue")
-plt.plot(x,appleCDF_plot, label = "Empirical CDF")#, color='blue')
+plt.fill_between(x_a,L_apple,U_apple, label = "confidence band",color="lightblue")
+plt.plot(x_a,appleCDF_plot, label = "Empirical CDF")#, color='blue')
 plt.xlabel("Apples")
 plt.legend()
 plt.title("Empirical CDF: Apples per Day")
@@ -77,12 +77,12 @@ for i in range(bikeCDF.size) :
     bikeCDF[i] = bikeCDF[i]/bikedata.size
 bikeCDF_plot = np.zeros(301)
 print(bikeCDF[40])
-x = np.zeros(301)
+x_b = np.zeros(301)
 for i in range(bikeCDF.size) :
     bikeCDF_plot[2*i+1] = bikeCDF[i]
     bikeCDF_plot[2*i+2] = bikeCDF[i]
-    x[2*i+1] = i
-    x[2*i+2] = i+1
+    x_b[2*i+1] = i
+    x_b[2*i+2] = i+1
 
 #Plot with an error band
 #error constant
@@ -92,13 +92,14 @@ U_bike = bikeCDF_plot + e_bike
 for i in range(bikeCDF_plot.size) :
     L_bike[i] = max(L_bike[i],0)
     U_bike[i] = min(U_bike[i],1)
-plt.fill_between(x,L_bike,U_bike, label = "confidence band",color="moccasin")
-plt.plot(x,bikeCDF_plot,color = "orange", label = "Empirical CDF")
+plt.fill_between(x_b,L_bike,U_bike, label = "confidence band",color="moccasin")
+plt.plot(x_b,bikeCDF_plot,color = "orange", label = "Empirical CDF")
 plt.title("Empirical CDF: Miles Biked per Day")
 plt.legend()
 plt.xlabel("Miles Biked")
 plt.show()
-plt.plot(x[0:100],bikeCDF_plot[0:100],color = "orange")
+#this is a version of the plot where I cut off the outlier data to show how the general idea of the CDF looks
+plt.plot(x_b[0:100],bikeCDF_plot[0:100],color = "orange")
 plt.title("Empirical CDF: Miles Biked per Day")
 plt.show()
 
@@ -112,14 +113,66 @@ for i in range(new_appledata.size) :
 for i in range(new_appleCDF.size) :
     new_appleCDF[i] = new_appleCDF[i]/new_appledata.size
 new_appleCDF_plot = np.zeros(16)
-x = np.zeros(16)
+x_a2 = np.zeros(16)
 for i in range(appleCDF.size) :
     new_appleCDF_plot[2*i] = new_appleCDF[i]
     new_appleCDF_plot[2*i+1] = new_appleCDF[i]
-    x[2*i] = i
-    x[2*i+1] = i+1
-plt.plot(x,new_appleCDF_plot, label = "Empirical CDF")
+    x_a2[2*i] = i
+    x_a2[2*i+1] = i+1
+plt.plot(x_a2,new_appleCDF_plot, label = "Empirical CDF")
 plt.xlabel("Apples")
 plt.legend()
 plt.title("Empirical CDF: Apples per Day")
+plt.show()
+
+#let's attempt to give an approximate 
+x_normal = np.linspace(-15,15, 1000)
+normal_cdf = stats.norm.cdf(x_normal)
+#plot the apple cdf again
+plt.fill_between(x_a,L_apple,U_apple, label = "confidence band",color="lightblue")
+plt.plot(x_a,appleCDF_plot, label = "Empirical CDF")
+plt.xlabel("Apples")
+#create the correct normal plot by taking the standard normal distribution and manipulating it so its mean and variance matches that of the appledata
+x_norm_plot = x_normal*(np.sqrt(variance(appledata))) + mean(appledata)
+
+x_0 = 0
+norm_0 = 10
+x_1 = 0
+norm_1 = 10
+#this iteration makes sure we will only plot the portion of the distribution that matches up with the appledata cdf
+for i in range(x_norm_plot.size) :
+    if(np.abs(x_norm_plot[i]) < norm_0) :
+        x_0 = i
+        norm_0 = np.abs(x_norm_plot[i])
+    if(np.abs(x_norm_plot[i]-8) < norm_1) :
+        x_1 = i
+        norm_1 = np.abs(x_norm_plot[i]-8)
+#plot the cdf
+plt.plot(x_norm_plot[x_0-1:x_1+1],normal_cdf[x_0-1:x_1+1], label = "Normal Approximation")
+plt.legend()
+plt.title("Empirical CDF: A & Normal Approximation")
+plt.show()
+
+plt.fill_between(x_b,L_bike,U_bike, label = "confidence band",color="moccasin")
+plt.plot(x_b,bikeCDF_plot,color = "orange", label = "Empirical CDF")
+plt.xlabel("Miles Biked")
+#create the correct normal plot by taking the standard normal distribution and manipulating it so its mean and variance matches that of the bikedata
+x_norm_plot = x_normal*(np.sqrt(variance(bikedata))) + mean(bikedata)
+
+x_0 = 0
+norm_0 = 10
+x_1 = 0
+norm_1 = 10
+
+for i in range(x_norm_plot.size) :
+    if(np.abs(x_norm_plot[i]) < norm_0) :
+        x_0 = i
+        norm_0 = np.abs(x_norm_plot[i])
+    if(np.abs(x_norm_plot[i]-150) < norm_1) :
+        x_1 = i
+        norm_1 = np.abs(x_norm_plot[i]-150)
+#plot it!
+plt.plot(x_norm_plot[x_0-1:x_1],normal_cdf[x_0-1:x_1], label = "Normal Approximation")
+plt.legend()
+plt.title("Empirical CDF: B & Normal Approximation")
 plt.show()
